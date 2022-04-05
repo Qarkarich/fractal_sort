@@ -1,31 +1,35 @@
-import datetime
 import random
+import timeit
+
+import matplotlib.pyplot as plt
+import numpy as np
 
 from sorters.bubble import bubble_sort
 from sorters.fractal_basic import fractal_sort
+from sorters.fractal_optimised import fractal_optim
 from sorters.insert import insert_sort
+from visualizer import valuelabel
 
 if __name__ == '__main__':
-    ints = [random.randint(0, 100) for _ in range(1000)]
+    ints = [random.randint(0, 100) for _ in range(10000)]
 
-    start = datetime.datetime.now().microsecond
-    bubble_sort(ints)
-    end = datetime.datetime.now().microsecond
+    ITERS = 10
 
-    print(f'bubble sort: {end - start} ms')
+    bubble_time = timeit.timeit(lambda: bubble_sort(ints.copy()), number=ITERS)
+    insert_time = timeit.timeit(lambda: insert_sort(ints.copy()), number=ITERS)
+    fractal_time = timeit.timeit(lambda: fractal_sort(ints.copy()), number=ITERS)
+    optim_fractal_time = timeit.timeit(lambda: fractal_optim(ints.copy()), number=ITERS)
 
-    ints = [random.randint(0, 100) for _ in range(1000)]
+    performance = [bubble_time, insert_time, fractal_time, optim_fractal_time]
+    objects = ('bubble sort', 'insert sort', 'fractal sort', 'optimised fractal sort')
 
-    start = datetime.datetime.now().microsecond
-    insert_sort(ints)
-    end = datetime.datetime.now().microsecond
+    valuelabel(objects, performance)
 
-    print(f'insert sort: {end - start} ms')
+    y_pos = np.arange(len(objects))
 
-    ints = [random.randint(0, 100) for _ in range(1000)]
+    plt.bar(y_pos, performance, align='center', color='orange')
+    plt.xticks(y_pos, objects)
+    plt.ylabel('performance time (seconds)')
+    plt.title('Производительность различных алгоритмов сортировки')
 
-    start = datetime.datetime.now().microsecond
-    print(fractal_sort(ints))
-    end = datetime.datetime.now().microsecond
-
-    print(f'fractal sort: {end - start} ms')
+    plt.show()
