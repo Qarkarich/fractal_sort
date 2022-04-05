@@ -1,4 +1,4 @@
-def fractal_sort(data):
+def fractal_optim(data):
     keys = {}
     for i in range(len(data)):
         if data[i] in keys:
